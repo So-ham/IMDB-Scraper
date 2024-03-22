@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 from constants import *
 import logging
+import concurrent.futures
 
 # Configure logging
 logging.basicConfig(filename='scraping.log', level=logging.ERROR,
@@ -16,24 +17,21 @@ def scrape_imdb_movies(genre):
         soup = BeautifulSoup(response.content, 'html.parser')
         movie_containers = soup.find_all("a", class_=MOVIE_CLASS)
 
+        movies_urls = [f'https://www.imdb.com{container["href"]}' for container in movie_containers if "title" in container["href"]]
+
         movies = []
 
-        for container in movie_containers:
-            href = container["href"]
-            if "title" in href:
-        
-                # Construct movie details URL using the IMDb ID
-                movie_details_url = f'https://www.imdb.com/{href}'
-                
-                # Scrape movie details page for rating, director, cast, and plot summary
-                movie_details = scrape_movie_details(movie_details_url)
-                
+        # Use ThreadPoolExecutor to scrape movie details in parallel
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_to_url = {executor.submit(scrape_movie_details, url): url for url in movies_urls}
+            for future in concurrent.futures.as_completed(future_to_url):
+                movie_details = future.result()
                 movies.append(movie_details)
-        
+
         return movies
 
     except Exception as e:
-        logging.error(f"Error occurred while scraping IMDb movies: {str(e)}")
+        logging.error(f"Error occurred while scraping IMDb movies for genre '{genre}': {str(e)}")
         return []
 
 def scrape_movie_details(url):
