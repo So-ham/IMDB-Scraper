@@ -1,11 +1,11 @@
 from utils import save_to_csv, save_to_json
 
-from scrape import scrape_imdb_movies
+from scraper import scrape_imdb_movies
 import urllib.parse
 
 
 def main():
-    genre = input("Enter the genre to search for (e.g., comedy, action): ")
+    genre = input("Search anything you want to search on IMDB website: ")
     movies = scrape_imdb_movies(genre)
     save_format = input("Enter the format to save the data (json/csv): ")
 
