@@ -7,6 +7,11 @@
   - run `pip install -r requirements.txt`
   - run `python main.py`
   - Search anything you want to search on IMDB website
-  - You will see the movies that the program is scrapping
+  - You will see the movies that the program is scraping
   - choose csv or json
   - open the desired file at (your_search_term)_movies.(desired_file_type)
+
+Side Note:
+  - Logging and error handling is added.
+  - Unit tests for scraper functions are added.
+    - run `python -m unittest test_scraper.py`
