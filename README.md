@@ -15,3 +15,5 @@ Side Note:
   - Logging and error handling is added.
   - Unit tests for scraper functions are added.
     - run `python -m unittest test_scraper.py`
+  - Added multi-threading.
+  - User can search anything they want.
